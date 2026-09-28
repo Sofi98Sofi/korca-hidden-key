@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Korça Hidden Key — lojë turistike interaktive për të zbuluar Korçën.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <title>Korça Hidden Key</title>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <button class="brand" onclick="showScreen('home')" aria-label="Kryefaqja">
+      <span class="brand-key">🔑</span>
+      <span><b>KORÇA</b><small>HIDDEN KEY</small></span>
+    </button>
+    <div class="top-actions">
+      <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Tingulli">🔊</button>
+      <div class="xp-pill">⭐ <span id="xp">0</span> XP</div>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="screen active">
+      <div class="hero">
+        <div class="hero-orb orb1"></div><div class="hero-orb orb2"></div>
+        <div class="hero-key">🔑</div>
+        <div class="eyebrow">LOJË TURISTIKE • 365 DITË</div>
+        <h1>Zbulo Korçën.<br><span>Fito çelësat.</span></h1>
+        <p>Eksploro vende, zgjidh sfida, mblidh thesare dhe ngjitu në renditje.</p>
+        <div class="hero-buttons">
+          <button class="primary" onclick="showScreen('missions')">FILLONI AVENTURËN <span>→</span></button>
+          <button class="ghost" onclick="showScreen('howto')">Si funksionon?</button>
+        </div>
+      </div>
+
+      <div class="quick-stats">
+        <div><strong id="doneCount">0</strong><span>Misione</span></div>
+        <div><strong id="collectionCount">0</strong><span>Thesare</span></div>
+        <div><strong id="level">Vizitor</strong><span>Niveli</span></div>
+        <div><strong id="streak">0</strong><span>Streak 🔥</span></div>
+      </div>
+
+      <div class="home-grid">
+        <article class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <div><span class="eyebrow">SFIDA E DITËS</span><h3 id="dailyTitle">Pazari i Vjetër</h3><p id="dailyText">Përfundo një mision për bonus XP.</p></div>
+          <button onclick="startDaily()">Luaj</button>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <div><span class="eyebrow">ARRITJA TJETËR</span><h3 id="nextBadge">Hapat e parë</h3><p id="nextBadgeText">Përfundo misionin e parë.</p></div>
+          <button onclick="showScreen('profile')">Shiko</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="missions" class="screen">
+      <div class="section-head">
+        <div><div class="eyebrow">MISIONET</div><h2>Eksploro qytetin</h2><p>Çdo sfidë të afron me thesarin final.</p></div>
+        <div class="filter-tabs">
+          <button class="filter active" onclick="filterMissions('all',this)">Të gjitha</button>
+          <button class="filter" onclick="filterMissions('open',this)">Të hapura</button>
+          <button class="filter" onclick="filterMissions('done',this)">Të kryera</button>
+        </div>
+      </div>
+      <div id="missionList" class="mission-grid"></div>
+    </section>
+
+    <section id="map" class="screen">
+      <div class="section-head"><div><div class="eyebrow">HARTA</div><h2>Korça është loja jote</h2><p>Prek një pikë për të parë sfidën.</p></div></div>
+      <div class="map-card">
+        <div class="map-grid"></div>
+        <div class="road road-a"></div><div class="road road-b"></div><div class="road road-c"></div>
+        <div class="map-title">KORÇË</div>
+        <div class="map-subtitle">HARTA E AVENTURËS</div>
+        <div class="pin pin1" onclick="openMission(0)">🏘️<small>Pazari</small></div>
+        <div class="pin pin2" onclick="openMission(1)">⛪<small>Katedralja</small></div>
+        <div class="pin pin3" onclick="openMission(2)">📸<small>Gjon Mili</small></div>
+        <div class="pin pin4" onclick="openMission(3)">🗼<small>Kulla</small></div>
+        <div class="pin pin5" onclick="openMission(4)">🌳<small>Parku</small></div>
+        <div class="map-compass">N<br><span>↑</span></div>
+      </div>
+      <div class="map-tip">💡 Këshillë: misionet e kryera shfaqen me një çelës të artë.</div>
+    </section>
+
+    <section id="collection" class="screen">
+      <div class="section-head"><div><div class="eyebrow">KOLEKSIONI</div><h2>Thesaret e tua</h2><p>Mblidhi të gjitha për të hapur sekretin final.</p></div></div>
+      <div id="treasures" class="treasure-grid"></div>
+      <div class="final-unlock" id="finalUnlock">
+        <span>🔐</span><div><b>Sekreti final</b><p>Fito të gjithë çelësat për ta hapur.</p></div><button onclick="openFinal()">Kontrollo</button>
+      </div>
+    </section>
+
+    <section id="leaderboard" class="screen">
+      <div class="section-head"><div><div class="eyebrow">RENDITJA</div><h2>Kush është eksploruesi?</h2><p>Rezultatet ruhen në këtë pajisje.</p></div></div>
+      <div class="leader-card">
+        <div class="your-rank"><span>🏅</span><div><b id="rankName">Ti</b><small>Renditja jote</small></div><strong id="rankScore">0 XP</strong></div>
+        <div id="leaderRows"></div>
+      </div>
+      <button class="secondary wide" onclick="resetDemoLeaderboard()">Rifresko shembullin</button>
+    </section>
+
+    <section id="profile" class="screen">
+      <div class="profile-hero">
+        <div class="avatar">🧭</div>
+        <div><div class="eyebrow">EKSPLORUESI</div><h2>Korça Explorer</h2><p id="levelText">Je në nivelin Vizitor.</p></div>
+        <div class="big-xp"><b id="xp2">0</b><span>XP</span></div>
+      </div>
+      <div class="progress-card"><div class="progress-head"><b>Progresi i nivelit</b><span id="progressText">0 / 150 XP</span></div><div class="progress"><i id="bar"></i></div></div>
+      <div class="badges-card"><div class="card-title"><h3>Badge-t</h3><span id="badgeCount">0/6</span></div><div id="badges" class="badge-grid"></div></div>
+    </section>
+
+    <section id="tools" class="screen">
+      <div class="section-head"><div><div class="eyebrow">MJETET E EKSPLORES</div><h2>GPS, QR & Kamera</h2><p>Përdori këto mjete kur je në vendin e misionit.</p></div></div>
+      <div class="tool-grid">
+        <article class="tool-card">
+          <div class="tool-icon">📍</div><div><h3>Kontrollo GPS</h3><p id="gpsStatus">Gati për të kontrolluar vendndodhjen.</p></div>
+          <button class="secondary" onclick="checkGPS()">Kontrollo</button>
+        </article>
+        <article class="tool-card">
+          <div class="tool-icon">📷</div><div><h3>Skaner QR</h3><p>Skano kodet QR të vendosura në pikat turistike.</p></div>
+          <button class="secondary" onclick="openQR()">Hap kamerën</button>
+        </article>
+      </div>
+      <div class="tool-note">🔐 <b>Si funksionon?</b><span>GPS kontrollon nëse je pranë pikës së misionit. QR përdoret për të zhbllokuar misione në terren.</span></div>
+      <div id="qrBox" class="qr-box" hidden>
+        <video id="qrVideo" playsinline></video>
+        <canvas id="qrCanvas" hidden></canvas>
+        <div class="qr-frame"><i></i></div>
+        <button class="primary wide" onclick="closeQR()">Mbyll skanerin</button>
+        <p id="qrStatus">Duke kërkuar kod QR…</p>
+      </div>
+    </section>
+
+    <section id="howto" class="screen">
+      <div class="section-head"><div><div class="eyebrow">UDHËZUES</div><h2>Si përdoret aplikacioni?</h2><p>Gjithçka që duhet të dish para se të fillosh.</p></div></div>
+      <div class="steps">
+        <article><span>01</span><div><h3>Zgjidh një mision</h3><p>Hap “Misione” dhe zgjidh një nga vendet e Korçës.</p></div></article>
+        <article><span>02</span><div><h3>Ndiq udhëzimin</h3><p>Shko te vendi i treguar dhe kërko detajin, simbolin ose objektin e sfidës.</p></div></article>
+        <article><span>03</span><div><h3>Përdor kodin</h3><p>Kur e gjen kodin, shkruaje në fushën e misionit dhe kontrolloje.</p></div></article>
+        <article><span>04</span><div><h3>Fito XP dhe thesare</h3><p>Misionet të japin pikë, çelësa dhe badge. Sa më shumë zbulon, aq më lart ngjitesh.</p></div></article>
+        <article><span>05</span><div><h3>Shiko hartën</h3><p>Harta tregon pikat e lojës dhe progresin tënd.</p></div></article>
+        <article><span>06</span><div><h3>Luaj në çdo pajisje</h3><p>Aplikacioni përshtatet automatikisht me telefon, tablet dhe kompjuter. Në shfletues modern mund të instalohet si aplikacion.</p></div></article>
+      </div>
+      <div class="device-card"><div>📱</div><div><b>Telefon</b><span>Android / iPhone</span></div><div>💻</div><div><b>Kompjuter</b><span>Chrome / Edge / Safari</span></div><div>📲</div><div><b>Tablet</b><span>iPad / Android</span></div></div>
+      <button class="primary wide" id="installBtn" onclick="installApp()" hidden>＋ Instalo aplikacionin</button>
+      <div class="safety-note">ℹ️ Për GPS dhe kamerën, shfletuesi kërkon leje. Për funksionim të plotë online/PWA përdor HTTPS ose localhost.</div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav active" onclick="showScreen('home')">⌂<small>Krye</small></button>
+    <button class="nav" onclick="showScreen('missions')">🎯<small>Misione</small></button>
+    <button class="nav" onclick="showScreen('map')">🗺️<small>Harta</small></button>
+    <button class="nav" onclick="showScreen('collection')">🎒<small>Thesari</small></button>
+    <button class="nav" onclick="showScreen('tools')">📍<small>Mjete</small></button>
+    <button class="nav" onclick="showScreen('profile')">👤<small>Profili</small></button>
+  </nav>
+</div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal()">×</button>
+    <div id="modalIcon" class="modal-icon">🔑</div>
+    <div class="eyebrow" id="modalType">MISION</div>
+    <h2 id="modalTitle"></h2>
+    <p id="modalText"></p>
+    <div class="challenge" id="challengeArea">
+      <label id="challengeLabel">Kodi i misionit</label>
+      <div class="code-row"><input id="codeInput" autocomplete="off" placeholder="Shkruaj kodin…"><button onclick="checkCode()">Kontrollo</button></div>
+      <small id="codeMessage"></small>
+    </div>
+    <div class="modal-meta"><span>⭐ <b id="modalReward">0</b> XP</span><span>⏱️ <b id="modalTime">60</b> sek</span></div>
+    <button id="completeBtn" class="primary wide" onclick="completeMission()">PËRFUNDO MISIONIN</button>
+    <div class="timer" id="timerWrap" hidden><i id="timerBar"></i></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

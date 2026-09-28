@@ -1,0 +1,10 @@
+{
+  "name": "Korça Hidden Key",
+  "short_name": "Korça Key",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f1eb",
+  "theme_color": "#17130f",
+  "lang": "sq",
+  "description": "Lojë turistike interaktive për të zbuluar Korçën."
+}
